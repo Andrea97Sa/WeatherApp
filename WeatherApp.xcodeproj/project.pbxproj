@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		9EA98D282CF1D4B00012215F /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 9EA98D272CF1D4B00012215F /* Alamofire */; };
-		9EA98D2A2CF1D4B00012215F /* AlamofireDynamic in Frameworks */ = {isa = PBXBuildFile; productRef = 9EA98D292CF1D4B00012215F /* AlamofireDynamic */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,7 +28,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				9EA98D282CF1D4B00012215F /* Alamofire in Frameworks */,
-				9EA98D2A2CF1D4B00012215F /* AlamofireDynamic in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -73,7 +71,6 @@
 			name = WeatherApp;
 			packageProductDependencies = (
 				9EA98D272CF1D4B00012215F /* Alamofire */,
-				9EA98D292CF1D4B00012215F /* AlamofireDynamic */,
 			);
 			productName = WeatherApp;
 			productReference = 9EA98CFF2CF1D1590012215F /* WeatherApp.app */;
@@ -264,6 +261,8 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Abbiamo bisogno della posizione";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Abbiamo bisogno della posizione";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -303,6 +302,8 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Abbiamo bisogno della posizione";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Abbiamo bisogno della posizione";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -368,11 +369,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 9EA98D262CF1D4B00012215F /* XCRemoteSwiftPackageReference "Alamofire" */;
 			productName = Alamofire;
-		};
-		9EA98D292CF1D4B00012215F /* AlamofireDynamic */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 9EA98D262CF1D4B00012215F /* XCRemoteSwiftPackageReference "Alamofire" */;
-			productName = AlamofireDynamic;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
