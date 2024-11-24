@@ -9,8 +9,8 @@ import SwiftUI
 
 struct ContentView: View {
     
-    @StateObject private var homeViewModel = HomeViewModel(dataProvider: MockedDataManager.shared)
-    @State private var path: NavigationPath = NavigationPath()
+    @StateObject private var homeViewModel = HomeViewModel(dataProvider: NetworkManger.shared)
+    @StateObject private var router = Router()
     @State private var newWeatherCityPresented = false
     @State private var searchText: String = ""
     
@@ -19,32 +19,43 @@ struct ContentView: View {
     }
     
     var body: some View {
-        NavigationStack(path: $path) {
-            ScrollView {
+        NavigationStack(path: $router.navigationPath) {
+            List {
                 if let weatherCities = homeViewModel.weatherCities {
-                    LazyVStack {
-                        ForEach(weatherCities, id: \.self) { city in
-                            SingleWeatherView(weather: city, newWeatherCityPresented: $newWeatherCityPresented)
-                                .onTapGesture {
-                                    path.append(city)
-                                }
-                        }
-                        Spacer()
+                    ForEach(weatherCities, id: \.self) { city in
+                        SingleWeatherView(weather: city, newWeatherCityPresented: $newWeatherCityPresented)
+                            .listRowSeparator(.hidden)
+                            .onTapGesture {
+                                router.navigationPath.append(city)
+                            }
+                    }.onDelete { offsets in
+                        homeViewModel.weatherCities?.remove(atOffsets: offsets)
                     }
                 }
             }
-            .padding(.horizontal)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .navigationTitle("today")
-            .navigationDestination(for: Weather.self, destination: { weather in
-                WeatherDetailView(weather: weather)
-            })
-        }.toolbar {
-            ToolbarItem(placement: .bottomBar) {
-                AddButtonView(action: {
-                    newWeatherCityPresented.toggle()
-                })
+            .listStyle(.plain)
+            .scrollContentBackground(.hidden)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Text("today")
+                        .font(.system(size: 40))
+                        .fontWeight(.bold)
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    AddButtonView(action: {
+                        searchText = ""
+                        newWeatherCityPresented.toggle()
+                    })
+                }
             }
+            .refreshable {
+                for city in homeViewModel.weatherCities ?? [] {
+                    await homeViewModel.fetchWeatherData(by: city.location.name)
+                }
+            }
+            .navigationDestination(for: Weather.self, destination: { weather in
+                WeatherDetailView(router: router, weather: weather)
+            })
         }
         .sheet(
             isPresented: $newWeatherCityPresented,

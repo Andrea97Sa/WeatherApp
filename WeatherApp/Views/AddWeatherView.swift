@@ -19,25 +19,40 @@ struct AddWeatherView: View {
                 Text("what is the weather like in...")
                     .font(.title3)
                     .fontWeight(.thin)
-                TextField("enter city name...", text: $searchText)
-                    .textFieldStyle(.roundedBorder)
                 Text("today?")
                     .font(.largeTitle)
                     .fontWeight(.bold)
+                TextField("enter city name...", text: $searchText)
+                    .textFieldStyle(.roundedBorder)
+                    .disableAutocorrection(true)
+               ForEach() { city in
+                    
+                }
+            }.onReceive($searchText.debounce(for: RunLoop.SchedulerTimeType.Stride(0.5), scheduler: RunLoop.main)) { searchTerm in
+                Task {
+                    
+//                    if searchTerm.count >= SizeValue.getIntValue(for: .c3) {
+//                        await findYourColleaguesViewModel.getColleagues()
+//                    } else {
+//                        findYourColleaguesViewModel.colleagues.removeAll()
+//                    }
+                }
             }
             .padding()
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     AddButtonView {
                         guard !searchText.isEmpty else { return }
-                        Task { await homeViewModel.fetchWeatherData(by: searchText) }
-                        newWeatherCityPresented.toggle()
+                        Task { await homeViewModel.fetchWeatherData(by: searchText)
+                            newWeatherCityPresented.toggle()
+                        }
                     }
                 }
             }
         }
     }
 }
+
 #Preview {
     AddWeatherView(searchText: .constant(""), newWeatherCityPresented: .constant(false), homeViewModel: HomeViewModel(dataProvider: MockedDataManager.shared))
 }

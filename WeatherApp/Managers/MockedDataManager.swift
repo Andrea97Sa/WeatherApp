@@ -25,7 +25,8 @@ class MockedDataManager: DataProviderProtocol {
             tempC: 15.0,
             tempF: 59.0,
             isDay: 1,
-            feelsLike: 14.5,
+            feelsLikeC: 14.5,
+            feelsLikeF: 40.0,
             humidity: 80.0,
             wind: 25.0,
             pressure: 1013.0,
@@ -86,11 +87,29 @@ class MockedDataManager: DataProviderProtocol {
             ]
         )
     )
-
-
+    
+    let mockCities: [City] = [
+        City(
+            id: 2801268,
+            name: "London",
+            region: "City of London, Greater London",
+            country: "United Kingdom"
+        ),
+        City(
+            id: 279381,
+            name: "Londrina",
+            region: "Parana",
+            country: "Brazil"
+        )
+    ]
+    
+    
     func fetchWeatherData(by cityName: String? = nil, by position: Position? = nil) async throws -> Weather? {
         return mockWeather
     }
     
     
+    func fetchCityName(by text: String) async throws -> [City]? {
+        return mockCities
+    }
 }

@@ -15,7 +15,6 @@ struct SingleWeatherView: View {
     var body: some View {
         VStack(alignment: .leading) {
             Divider()
-            
             HStack {
                 Text(weather.location.country.lowercased())
                 Spacer()
@@ -34,7 +33,6 @@ struct SingleWeatherView: View {
             }
             .font(.title2)
             .fontWeight(.semibold)
-            
         }
     }
 }

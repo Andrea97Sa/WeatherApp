@@ -43,4 +43,9 @@ class NetworkManger: DataProviderProtocol {
         let weather = try await self.fetch(url, as: Weather.self, parameter: parameters).result.get()
         return weather
     }
+    
+    
+    func fetchCityName(by text: String) async throws -> [City]? {
+        <#code#>
+    }
 }

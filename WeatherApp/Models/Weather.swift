@@ -24,62 +24,6 @@ struct Weather: Codable, Hashable {
     }
 }
 
-struct WeatherLocation: Codable, Hashable {
-    let name: String
-    let region: String
-    let country: String
-    let lat: Double
-    let lon: Double
-    let localtime: String
-    
-    enum CodingKeys: String, CodingKey {
-        case name
-        case region
-        case country
-        case lat
-        case lon
-        case localtime
-    }
-}
-
-struct CurrentWeather: Codable, Hashable {
-    let lastUpdated: String
-    let tempC: Double
-    let tempF: Double
-    let isDay: Int
-    let feelsLike: Double
-    let humidity: Double
-    let wind: Double
-    let pressure: Double
-    let uv: Double
-    let condition: WeatherCondition
-    
-    var weatherIcon: String {
-        switch self.condition.code {
-        case 1000: "sun.max.fill"
-        case 1003: "cloud.sun.fill"
-        case 1006: "cloud.fill"
-        case 1135: "cloud.fog.fill"
-        case 1183: "cloud.rain.fill"
-        case 1195: "cloud.bolt.rain.fill"
-        default:
-            "sun.max.circle"
-        }
-    }
-    enum CodingKeys: String, CodingKey {
-        case lastUpdated = "last_updated"
-        case tempC = "temp_c"
-        case tempF = "temp_f"
-        case isDay = "is_day"
-        case condition
-        case feelsLike = "feelslike_c"
-        case humidity = "humidity"
-        case wind = "wind_kph"
-        case pressure = "pressure_mb"
-        case uv = "uv"
-    }
-}
-
 struct WeatherCondition: Codable, Hashable {
     let text: String
     let code: Int
@@ -120,6 +64,7 @@ struct Day: Codable, Hashable {
 }
 
 struct Hour: Codable, Hashable {
+    let id = UUID()
     let time: String
     let tempC: Double
     let tempF: Double
