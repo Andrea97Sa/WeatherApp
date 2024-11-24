@@ -9,40 +9,48 @@ import SwiftUI
 
 struct HomeView: View {
     
+    @EnvironmentObject private var router: Router
     @StateObject private var homeViewModel = HomeViewModel(dataProvider: NetworkManger.shared)
-    @StateObject private var router = Router()
     @State private var newWeatherCityPresented = false
-    
-    init(homeViewModel: HomeViewModel) {
-        _homeViewModel = StateObject(wrappedValue: homeViewModel)
-    }
+    @State var selectedMetric: Metric = .celsius
     
     var body: some View {
         NavigationStack(path: $router.navigationPath) {
-            List {
+            VStack{
                 switch homeViewModel.viewState {
                 case .success:
-                    if let weatherCities = homeViewModel.weatherCities {
-                        ForEach(weatherCities, id: \.self) { city in
-                            SingleWeatherView(weather: city, newWeatherCityPresented: $newWeatherCityPresented)
-                                .listRowSeparator(.hidden)
-                                .onTapGesture {
-                                    router.navigationPath.append(city)
-                                }
-                        }.onDelete { offsets in
-                            homeViewModel.weatherCities?.remove(atOffsets: offsets)
+                    List {
+                        if let weatherCities = homeViewModel.weatherCities {
+                            ForEach(weatherCities, id: \.self) { city in
+                                SingleWeatherView(weather: city, newWeatherCityPresented: $newWeatherCityPresented, selectedMetric: $selectedMetric)
+                                    .listRowSeparator(.hidden)
+                                    .onTapGesture {
+                                        router.push(to: .details(city))
+                                    }
+                            }.onDelete { offset in
+                                homeViewModel.deleteWeatherCity(at: offset)
+                            }
                         }
                     }
+                    //MARK: - List Setup
+                    .listStyle(.plain)
+                    .scrollContentBackground(.hidden)
+                    //MARK: - Push Navigation
+                    .navigationDestination(for: AppRoute.self, destination: { route in
+                        switch route {
+                        case .details(let city):
+                            WeatherDetailView(selectedMetric: $selectedMetric, weather: city)
+                        }
+                    })
                 case .loading:
                     ProgressView()
                 case .failure(let error):
                     Text(error)
                 case .empty:
-                    Text("No cities added yet")
+                    Text("no cities added yet")
                 }
             }
-            .listStyle(.plain)
-            .scrollContentBackground(.hidden)
+            //MARK: - NavigationBar setup
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Text("today")
@@ -50,36 +58,29 @@ struct HomeView: View {
                         .fontWeight(.bold)
                 }
                 ToolbarItem(placement: .topBarTrailing) {
-                    AddButtonView(action: {
-                        newWeatherCityPresented.toggle()
-                    })
+                    HStack(spacing: 12) {
+                        TempMetricSelectionView(selectedMetric: $selectedMetric)
+                        RefreshWeatherListButton(homeViewModel: homeViewModel)
+                        AddButtonView(action: {
+                            newWeatherCityPresented.toggle()
+                        })
+                    }
                 }
             }
-            .refreshable {
-                var currentCities = [Weather]()
-                for city in homeViewModel.weatherCities ?? [] {
-                    currentCities.append(city)
-                }
-                await homeViewModel.refreshWeatherData(by: currentCities)
-            }
-            .navigationDestination(for: Weather.self, destination: { weather in
-                WeatherDetailView(router: router, weather: weather)
+            //MARK: - Modal Navigation
+            .sheet(
+                isPresented: $newWeatherCityPresented,
+                content: {
+                    AddWeatherView(newWeatherCityPresented: $newWeatherCityPresented, homeViewModel: homeViewModel)
+                })
+            .onReceive(LocationManager.shared.$userLocation, perform: { userLocation in
+                Task { await homeViewModel.fetchLocationByUserPosition(userLocation: userLocation) }
             })
         }
-        .sheet(
-            isPresented: $newWeatherCityPresented,
-            content: {
-                AddWeatherView(newWeatherCityPresented: $newWeatherCityPresented, homeViewModel: homeViewModel)
-            })
-        .onReceive(LocationManager.shared.$userLocation, perform: { userLocation in
-            if let userLocation = userLocation {
-                let currentPosition = Position(latitude: userLocation.latitude, longitude: userLocation.longitude)
-                Task { await homeViewModel.fetchWeatherData(by: nil, by: currentPosition) }
-            }
-        })
+        
     }
 }
 
 #Preview {
-    HomeView(homeViewModel: HomeViewModel(dataProvider: MockedDataManager.shared))
+    HomeView()
 }

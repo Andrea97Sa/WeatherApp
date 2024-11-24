@@ -9,9 +9,14 @@ import SwiftUI
 
 @main
 struct WeatherAppApp: App {
+    
+    @StateObject private var router = Router()
+
     var body: some Scene {
+        
         WindowGroup {
-            HomeView(homeViewModel: HomeViewModel(dataProvider: NetworkManger.shared))
+            HomeView()
+                .environmentObject(router)
                 .onAppear() {
                     LocationManager.shared.setupLocationManager()
                 }

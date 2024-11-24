@@ -8,9 +8,9 @@
 import SwiftUI
 
 struct WeatherDetailView: View {
-    
-    @ObservedObject var router: Router
-    @State var selectedMetric: Metric = .celsius
+    @EnvironmentObject private var router: Router
+    @Binding var selectedMetric: Metric
+
     var weather: Weather
     
     var body: some View {
@@ -26,27 +26,13 @@ struct WeatherDetailView: View {
         }.toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Button(action: {
-                    router.navigationPath.removeLast()
+                    router.pop()
                 }, label: {
                     Image(systemName: "arrow.left")
                 }).buttonStyle(.plain)
             }
             ToolbarItem(placement: .topBarTrailing) {
-                HStack {
-                    Button(action: {
-                        selectedMetric = .celsius
-                    }, label: {
-                        Text("°C")
-                            .underline(selectedMetric == .celsius)
-                    }).buttonStyle(.plain)
-                    
-                    Button(action: {
-                        selectedMetric = .farhenheit
-                    }, label: {
-                        Text("°F")
-                            .underline(selectedMetric == .farhenheit)
-                    }).buttonStyle(.plain)
-                }
+                TempMetricSelectionView(selectedMetric: $selectedMetric)
             }
         }
         .padding(.horizontal)
@@ -55,5 +41,6 @@ struct WeatherDetailView: View {
 }
 
 #Preview {
-    WeatherDetailView(router: Router(), weather: MockedDataManager.shared.mockWeather)
+    WeatherDetailView(selectedMetric: .constant(.celsius), weather: MockedDataManager.shared.mockWeather)
 }
+

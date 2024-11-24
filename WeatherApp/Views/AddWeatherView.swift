@@ -34,7 +34,7 @@ struct AddWeatherView: View {
                             HStack {
                                 Text("\(city.name), \(city.region), \(city.country)")
                                 if addCityWeatherViewModel.selectedCity?.id == city.id {
-                                        Image(systemName: "checkmark")
+                                    Image(systemName: "checkmark")
                                 }
                             }
                         }.onTapGesture {
@@ -44,7 +44,7 @@ struct AddWeatherView: View {
                 case .failure(let error):
                     Text(error)
                 case .empty:
-                    Text("no cities found")
+                    EmptyView()
                 }
             }.onReceive(addCityWeatherViewModel.$searchText.debounce(for: RunLoop.SchedulerTimeType.Stride(0.5), scheduler: RunLoop.main)) { searchTerm in
                 guard searchTerm.count >= 3 else {
@@ -52,7 +52,6 @@ struct AddWeatherView: View {
                     addCityWeatherViewModel.selectedCity = nil
                     return }
                 Task { await addCityWeatherViewModel.fetchCityNames() }
-                
             }
             .onAppear {
                 addCityWeatherViewModel.searchText = ""

@@ -11,7 +11,8 @@ struct SingleWeatherView: View {
     
     let weather: Weather
     @Binding var newWeatherCityPresented: Bool
-    
+    @Binding var selectedMetric: Metric
+
     var body: some View {
         VStack(alignment: .leading) {
             Divider()
@@ -27,12 +28,12 @@ struct SingleWeatherView: View {
                 Text(weather.location.name.lowercased())
                 Spacer()
                 HStack {
-                    Text(weather.currentWeather.tempC.description)
+                    Text(selectedMetric == .celsius ? "\(weather.currentWeather.tempC.description)°" : "\(weather.currentWeather.tempF.description)°")
                     Image(systemName: weather.currentWeather.weatherIcon)
                 }
             }
             .font(.title2)
             .fontWeight(.semibold)
-        }
+        }.background(.white)
     }
 }

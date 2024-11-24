@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import CoreLocation
 
 class HomeViewModel: BaseViewModel {
     
@@ -44,5 +45,25 @@ class HomeViewModel: BaseViewModel {
             debugPrint("Error refreshing weather data: \(error)")
         }
     }
+    
+    func deleteWeatherCity(at index: IndexSet) {
+        self.weatherCities?.remove(atOffsets: index)
+    }
+    
+    func refreshCurrentWeatherData(by currentCities: [Weather]?) async {
+        var currentCities = [Weather]()
+        for city in weatherCities ?? [] {
+            currentCities.append(city)
+        }
+         await refreshWeatherData(by: currentCities)
+    }
+    
+    func fetchLocationByUserPosition(userLocation: CLLocationCoordinate2D?) async {
+        if let userLocation = userLocation {
+            let currentPosition = Position(latitude: userLocation.latitude, longitude: userLocation.longitude)
+            await fetchWeatherData(by: nil, by: currentPosition)
+        }
+    }
+    
 }
 
