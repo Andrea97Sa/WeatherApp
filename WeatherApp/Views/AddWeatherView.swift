@@ -17,22 +17,27 @@ struct AddWeatherView: View {
         NavigationStack {
             VStack {
                 Text("what is the weather like in...")
-                TextField("wnter city name", text: $searchText)
+                    .font(.title3)
+                    .fontWeight(.thin)
+                TextField("enter city name...", text: $searchText)
                     .textFieldStyle(.roundedBorder)
-                Text("today")
+                Text("today?")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
             }
             .padding()
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: {
+                    AddButtonView {
                         guard !searchText.isEmpty else { return }
                         Task { await homeViewModel.fetchWeatherData(by: searchText) }
                         newWeatherCityPresented.toggle()
-                    }, label: {
-                        Text("add")
-                    })
+                    }
                 }
             }
         }
     }
+}
+#Preview {
+    AddWeatherView(searchText: .constant(""), newWeatherCityPresented: .constant(false), homeViewModel: HomeViewModel(dataProvider: MockedDataManager.shared))
 }

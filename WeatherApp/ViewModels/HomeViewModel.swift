@@ -11,6 +11,7 @@ class HomeViewModel: ObservableObject {
     
     @Published var weather: Weather?
     @Published var weatherCities: [Weather]?
+    
     let dataProvider: DataProviderProtocol
     
     init(dataProvider: DataProviderProtocol) {
@@ -25,7 +26,6 @@ class HomeViewModel: ObservableObject {
             } else if let position  {
                 guard let newWeather = try await dataProvider.fetchWeatherData(by: nil, by: position) else { return }
                 self.weatherCities = [newWeather]
-                debugPrint("Weather cities: \(self.weatherCities)")
         }
         } catch {
             debugPrint("Error fetching weather data: \(error)")

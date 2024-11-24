@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     
-    @StateObject private var homeViewModel = HomeViewModel(dataProvider: NetworkManger.shared)
+    @StateObject private var homeViewModel = HomeViewModel(dataProvider: MockedDataManager.shared)
     @State private var path: NavigationPath = NavigationPath()
     @State private var newWeatherCityPresented = false
     @State private var searchText: String = ""
@@ -19,58 +19,47 @@ struct ContentView: View {
     }
     
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $path) {
             ScrollView {
-                Button(action: {
-                    if let userLocation = LocationManager.shared.userLocation {
-                        let currentPosition = Position(latitude: userLocation.latitude, longitude: userLocation.longitude)
-                        Task { await homeViewModel.fetchWeatherData(by: nil, by: currentPosition) }
-                    }
-                }, label: {
-                    Text("Find my location")
-                }).navigationTitle("today")
                 if let weatherCities = homeViewModel.weatherCities {
                     LazyVStack {
                         ForEach(weatherCities, id: \.self) { city in
                             SingleWeatherView(weather: city, newWeatherCityPresented: $newWeatherCityPresented)
+                                .onTapGesture {
+                                    path.append(city)
+                                }
                         }
+                        Spacer()
                     }
-                    Spacer()
-                        .frame(maxWidth: .infinity, alignment: .leading)
                 }
             }
+            .padding(.horizontal)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .navigationTitle("today")
+            .navigationDestination(for: Weather.self, destination: { weather in
+                WeatherDetailView(weather: weather)
+            })
         }.toolbar {
             ToolbarItem(placement: .bottomBar) {
-                Button {
+                AddButtonView(action: {
                     newWeatherCityPresented.toggle()
-                } label: {
-                    Image(systemName: "plus.circle")
-                }.buttonStyle(.plain)
+                })
             }
         }
         .sheet(
             isPresented: $newWeatherCityPresented,
-            onDismiss: {
-                guard !searchText.isEmpty else { return }
-                Task { await homeViewModel.fetchWeatherData(by: searchText) }
-            },
             content: {
                 AddWeatherView(searchText: $searchText, newWeatherCityPresented: $newWeatherCityPresented, homeViewModel: homeViewModel)
-                
             })
-        .task {
-            if let userLocation = LocationManager.shared.userLocation {
+        .onReceive(LocationManager.shared.$userLocation, perform: { userLocation in
+            if let userLocation = userLocation {
                 let currentPosition = Position(latitude: userLocation.latitude, longitude: userLocation.longitude)
                 Task { await homeViewModel.fetchWeatherData(by: nil, by: currentPosition) }
             }
-        }
+        })
     }
 }
 
 #Preview {
     ContentView(homeViewModel: HomeViewModel(dataProvider: MockedDataManager.shared))
 }
-
-
-
-

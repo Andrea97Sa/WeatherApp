@@ -19,7 +19,7 @@ struct SingleWeatherView: View {
             HStack {
                 Text(weather.location.country.lowercased())
                 Spacer()
-                Text(Date().formatted(.dateTime))
+                Text(weather.location.localtime)
             }
             .padding(.top, 16)
             .font(.callout)
@@ -27,12 +27,14 @@ struct SingleWeatherView: View {
             HStack {
                 Text(weather.location.name.lowercased())
                 Spacer()
-                Text(weather.main.tempC.description)
+                HStack {
+                    Text(weather.currentWeather.tempC.description)
+                    Image(systemName: weather.currentWeather.weatherIcon)
+                }
             }
             .font(.title2)
             .fontWeight(.semibold)
             
         }
-        .padding()
     }
 }
