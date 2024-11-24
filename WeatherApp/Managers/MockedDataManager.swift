@@ -109,7 +109,7 @@ class MockedDataManager: DataProviderProtocol {
     }
     
     
-    func fetchCityName(by text: String) async throws -> [City]? {
+    func fetchCityName(by text: String) async throws -> [City] {
         return mockCities
     }
 }

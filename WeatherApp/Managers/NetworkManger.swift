@@ -12,7 +12,7 @@ class NetworkManger: DataProviderProtocol {
     
     static let shared = NetworkManger()
     
-    let baseHost = "https://api.weatherapi.com/v1"
+    let baseHost = "https://api.weatherapi.com/v1/"
     let apiKeyParameter = "88d7f08069f54cbf870104542242311"
     
     
@@ -39,13 +39,20 @@ class NetworkManger: DataProviderProtocol {
             parameters["q"] = "\(position.latitude),\(position.longitude)"
         }
         
-        let url = "/forecast.json"
+        let url = "forecast.json"
         let weather = try await self.fetch(url, as: Weather.self, parameter: parameters).result.get()
         return weather
     }
     
     
-    func fetchCityName(by text: String) async throws -> [City]? {
-        <#code#>
+    func fetchCityName(by text: String) async throws -> [City] {
+        let parameters: Parameters = [
+            "key": apiKeyParameter,
+            "q": text,
+        ]
+        
+        let url = "search.json"
+        let cities = try await self.fetch(url, as: [City].self, parameter: parameters).result.get()
+        return cities
     }
 }

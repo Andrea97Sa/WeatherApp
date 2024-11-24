@@ -7,28 +7,42 @@
 
 import Foundation
 
-class HomeViewModel: ObservableObject {
+class HomeViewModel: BaseViewModel {
     
     @Published var weather: Weather?
     @Published var weatherCities: [Weather]?
     
-    let dataProvider: DataProviderProtocol
-    
-    init(dataProvider: DataProviderProtocol) {
-        self.dataProvider = dataProvider
-    }
-    
     @MainActor func fetchWeatherData(by cityName: String? = nil, by position: Position? = nil) async {
         do {
+            self.viewState = .loading
             if let cityName {
                 guard let newWeather = try await dataProvider.fetchWeatherData(by: cityName, by: nil) else { return }
                 self.weatherCities?.append(newWeather)
             } else if let position  {
                 guard let newWeather = try await dataProvider.fetchWeatherData(by: nil, by: position) else { return }
                 self.weatherCities = [newWeather]
-        }
+            }
+            self.viewState = .success
+            
         } catch {
+            self.viewState = .failure(error: error.localizedDescription)
             debugPrint("Error fetching weather data: \(error)")
         }
     }
+    
+    @MainActor func refreshWeatherData(by weathers: [Weather]) async {
+        do {
+            self.viewState = .loading
+            self.weatherCities?.removeAll()
+            for weather in weathers {
+                guard let newWeather = try await dataProvider.fetchWeatherData(by: weather.location.name, by: nil) else { return }
+                self.weatherCities?.append(newWeather)
+            }
+            self.viewState = .success
+        } catch  {
+            self.viewState = .failure(error: error.localizedDescription)
+            debugPrint("Error refreshing weather data: \(error)")
+        }
+    }
 }
+

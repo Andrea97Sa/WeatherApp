@@ -11,7 +11,7 @@ import SwiftUI
 struct WeatherAppApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView(homeViewModel: HomeViewModel(dataProvider: NetworkManger.shared))
+            HomeView(homeViewModel: HomeViewModel(dataProvider: NetworkManger.shared))
                 .onAppear() {
                     LocationManager.shared.setupLocationManager()
                 }

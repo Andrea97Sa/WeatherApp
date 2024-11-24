@@ -7,12 +7,11 @@
 
 import SwiftUI
 
-struct ContentView: View {
+struct HomeView: View {
     
     @StateObject private var homeViewModel = HomeViewModel(dataProvider: NetworkManger.shared)
     @StateObject private var router = Router()
     @State private var newWeatherCityPresented = false
-    @State private var searchText: String = ""
     
     init(homeViewModel: HomeViewModel) {
         _homeViewModel = StateObject(wrappedValue: homeViewModel)
@@ -21,16 +20,25 @@ struct ContentView: View {
     var body: some View {
         NavigationStack(path: $router.navigationPath) {
             List {
-                if let weatherCities = homeViewModel.weatherCities {
-                    ForEach(weatherCities, id: \.self) { city in
-                        SingleWeatherView(weather: city, newWeatherCityPresented: $newWeatherCityPresented)
-                            .listRowSeparator(.hidden)
-                            .onTapGesture {
-                                router.navigationPath.append(city)
-                            }
-                    }.onDelete { offsets in
-                        homeViewModel.weatherCities?.remove(atOffsets: offsets)
+                switch homeViewModel.viewState {
+                case .success:
+                    if let weatherCities = homeViewModel.weatherCities {
+                        ForEach(weatherCities, id: \.self) { city in
+                            SingleWeatherView(weather: city, newWeatherCityPresented: $newWeatherCityPresented)
+                                .listRowSeparator(.hidden)
+                                .onTapGesture {
+                                    router.navigationPath.append(city)
+                                }
+                        }.onDelete { offsets in
+                            homeViewModel.weatherCities?.remove(atOffsets: offsets)
+                        }
                     }
+                case .loading:
+                    ProgressView()
+                case .failure(let error):
+                    Text(error)
+                case .empty:
+                    Text("No cities added yet")
                 }
             }
             .listStyle(.plain)
@@ -43,15 +51,16 @@ struct ContentView: View {
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     AddButtonView(action: {
-                        searchText = ""
                         newWeatherCityPresented.toggle()
                     })
                 }
             }
             .refreshable {
+                var currentCities = [Weather]()
                 for city in homeViewModel.weatherCities ?? [] {
-                    await homeViewModel.fetchWeatherData(by: city.location.name)
+                    currentCities.append(city)
                 }
+                await homeViewModel.refreshWeatherData(by: currentCities)
             }
             .navigationDestination(for: Weather.self, destination: { weather in
                 WeatherDetailView(router: router, weather: weather)
@@ -60,7 +69,7 @@ struct ContentView: View {
         .sheet(
             isPresented: $newWeatherCityPresented,
             content: {
-                AddWeatherView(searchText: $searchText, newWeatherCityPresented: $newWeatherCityPresented, homeViewModel: homeViewModel)
+                AddWeatherView(newWeatherCityPresented: $newWeatherCityPresented, homeViewModel: homeViewModel)
             })
         .onReceive(LocationManager.shared.$userLocation, perform: { userLocation in
             if let userLocation = userLocation {
@@ -72,5 +81,5 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView(homeViewModel: HomeViewModel(dataProvider: MockedDataManager.shared))
+    HomeView(homeViewModel: HomeViewModel(dataProvider: MockedDataManager.shared))
 }

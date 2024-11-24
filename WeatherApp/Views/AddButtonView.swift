@@ -9,7 +9,13 @@ import SwiftUI
 
 struct AddButtonView: View {
     
+    let disabled: Bool
     let action: () -> ()
+    
+    init(disabled: Bool? = false, action: @escaping () -> ()) {
+        self.disabled = disabled ?? false
+        self.action = action
+    }
     
     var body: some View {
         Button {
@@ -17,7 +23,8 @@ struct AddButtonView: View {
         } label: {
             Text("add")
                 .underline()
-        }.buttonStyle(.plain)
+        }.disabled(disabled)
+        .buttonStyle(.plain)
     }
 }
 

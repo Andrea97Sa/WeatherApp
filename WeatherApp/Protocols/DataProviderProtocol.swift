@@ -10,5 +10,5 @@ import Foundation
 
 protocol DataProviderProtocol {
     func fetchWeatherData(by cityName: String?, by position: Position?) async throws -> Weather?
-    func fetchCityName(by text: String) async throws -> [City]?
+    func fetchCityName(by text: String) async throws -> [City]
 }

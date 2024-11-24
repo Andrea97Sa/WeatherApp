@@ -9,9 +9,9 @@ import SwiftUI
 
 struct AddWeatherView: View {
     
-    @Binding var searchText: String
     @Binding var newWeatherCityPresented: Bool
     @ObservedObject var homeViewModel: HomeViewModel
+    @StateObject private var addCityWeatherViewModel = AddCityWeatherViewModel(dataProvider: NetworkManger.shared)
     
     var body: some View {
         NavigationStack {
@@ -22,28 +22,46 @@ struct AddWeatherView: View {
                 Text("today?")
                     .font(.largeTitle)
                     .fontWeight(.bold)
-                TextField("enter city name...", text: $searchText)
+                TextField("enter city name...", text: $addCityWeatherViewModel.searchText)
                     .textFieldStyle(.roundedBorder)
                     .disableAutocorrection(true)
-               ForEach() { city in
-                    
+                switch addCityWeatherViewModel.viewState {
+                case .loading:
+                    ProgressView()
+                case .success:
+                    ForEach(addCityWeatherViewModel.cityNames, id: \.id) { city in
+                        LazyVStack(alignment: .leading, spacing: 16) {
+                            HStack {
+                                Text("\(city.name), \(city.region), \(city.country)")
+                                if addCityWeatherViewModel.selectedCity?.id == city.id {
+                                        Image(systemName: "checkmark")
+                                }
+                            }
+                        }.onTapGesture {
+                            addCityWeatherViewModel.selectedCity = city
+                        }
+                    }
+                case .failure(let error):
+                    Text(error)
+                case .empty:
+                    Text("no cities found")
                 }
-            }.onReceive($searchText.debounce(for: RunLoop.SchedulerTimeType.Stride(0.5), scheduler: RunLoop.main)) { searchTerm in
-                Task {
-                    
-//                    if searchTerm.count >= SizeValue.getIntValue(for: .c3) {
-//                        await findYourColleaguesViewModel.getColleagues()
-//                    } else {
-//                        findYourColleaguesViewModel.colleagues.removeAll()
-//                    }
-                }
+            }.onReceive(addCityWeatherViewModel.$searchText.debounce(for: RunLoop.SchedulerTimeType.Stride(0.5), scheduler: RunLoop.main)) { searchTerm in
+                guard searchTerm.count >= 3 else {
+                    addCityWeatherViewModel.cityNames.removeAll()
+                    addCityWeatherViewModel.selectedCity = nil
+                    return }
+                Task { await addCityWeatherViewModel.fetchCityNames() }
+                
+            }
+            .onAppear {
+                addCityWeatherViewModel.searchText = ""
             }
             .padding()
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    AddButtonView {
-                        guard !searchText.isEmpty else { return }
-                        Task { await homeViewModel.fetchWeatherData(by: searchText)
+                    AddButtonView(disabled: addCityWeatherViewModel.selectedCity == nil) {
+                        Task { await homeViewModel.fetchWeatherData(by: addCityWeatherViewModel.selectedCity?.name)
                             newWeatherCityPresented.toggle()
                         }
                     }
@@ -54,5 +72,5 @@ struct AddWeatherView: View {
 }
 
 #Preview {
-    AddWeatherView(searchText: .constant(""), newWeatherCityPresented: .constant(false), homeViewModel: HomeViewModel(dataProvider: MockedDataManager.shared))
+    AddWeatherView(newWeatherCityPresented: .constant(false), homeViewModel: HomeViewModel(dataProvider: MockedDataManager.shared))
 }
