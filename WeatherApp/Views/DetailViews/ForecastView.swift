@@ -23,6 +23,9 @@ struct ForecastView: View {
                                     .font(.customThin())
                                 Text(selectedMetric == .celsius ? "\(hour.tempC.description)°" : "\(hour.tempF.description)°")
                                     .font(.customRegular())
+                                    .foregroundStyle(checkHourIsPast(hour: hour) ? Color.gray :
+                                                        Color.blackDark)
+                                    .underline(checkHourIsCurrent(hour: hour))
                             }
                             .id(hour.id)
                         }
@@ -32,7 +35,7 @@ struct ForecastView: View {
             .onAppear {
                 if let hours = weather.forecast.forecastday.first?.hour,
                    let currentHourIndex = hours.firstIndex(where: {
-                       $0.time.formatted(.dateTime.hour()) == Date().formatted(.dateTime.hour())
+                       $0.time.formatted(.dateTime.hour()) == weather.location.localtime.formatted(.dateTime.hour())
                    }) {
                     withAnimation {
                         proxy.scrollTo(hours[currentHourIndex].id, anchor: .center)
@@ -40,6 +43,14 @@ struct ForecastView: View {
                 }
             }
         }
+    }
+    
+    func checkHourIsPast(hour: Hour) -> Bool {
+        return hour.time.formatted(.dateTime.hour()) < weather.location.localtime.formatted(.dateTime.hour())
+    }
+    
+    func checkHourIsCurrent(hour: Hour) -> Bool {
+        return hour.time.formatted(.dateTime.hour()) == weather.location.localtime.formatted(.dateTime.hour())
     }
 }
 

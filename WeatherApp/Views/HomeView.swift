@@ -58,8 +58,8 @@ struct HomeView: View {
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     HStack(spacing: 12) {
-                        TempMetricSelectionView(selectedMetric: $selectedMetric)
                         RefreshWeatherListButton(homeViewModel: homeViewModel)
+                        TempMetricSelectionView(selectedMetric: $selectedMetric)
                         AddButtonView(action: {
                             newWeatherCityPresented.toggle()
                         })
