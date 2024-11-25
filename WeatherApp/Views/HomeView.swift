@@ -20,8 +20,7 @@ struct HomeView: View {
                 switch homeViewModel.viewState {
                 case .success:
                     List {
-                        if let weatherCities = homeViewModel.weatherCities {
-                            ForEach(weatherCities, id: \.self) { city in
+                        ForEach(homeViewModel.weatherCities, id: \.self) { city in
                                 SingleWeatherView(weather: city, selectedMetric: $selectedMetric)
                                     .listRowSeparator(.hidden)
                                     .onTapGesture {
@@ -30,7 +29,7 @@ struct HomeView: View {
                             }.onDelete { offset in
                                 homeViewModel.deleteWeatherCity(at: offset)
                             }
-                        }
+                        
                     }
                     //MARK: - List Setup
                     .listStyle(.plain)
