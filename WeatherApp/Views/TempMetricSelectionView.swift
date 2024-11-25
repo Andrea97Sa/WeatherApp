@@ -20,6 +20,7 @@ struct TempMetricSelectionView: View {
             }, label: {
                 Text("°C")
                     .underline(selectedMetric == .celsius)
+                    .font(.customThin())
             }).buttonStyle(.plain)
             
             Button(action: {
@@ -28,6 +29,7 @@ struct TempMetricSelectionView: View {
                 }
             }, label: {
                 Text("°F")
+                    .font(.customThin())
                     .underline(selectedMetric == .farhenheit)
             }).buttonStyle(.plain)
         }

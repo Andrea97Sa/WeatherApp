@@ -10,7 +10,6 @@ import SwiftUI
 struct SingleWeatherView: View {
     
     let weather: Weather
-    @Binding var newWeatherCityPresented: Bool
     @Binding var selectedMetric: Metric
 
     var body: some View {
@@ -19,11 +18,10 @@ struct SingleWeatherView: View {
             HStack {
                 Text(weather.location.country.lowercased())
                 Spacer()
-                Text(weather.location.localtime)
+                Text(weather.location.localtime.formatted(date: .omitted, time: .shortened))
             }
             .padding(.top, 16)
-            .font(.callout)
-            
+            .font(.customThin())
             HStack {
                 Text(weather.location.name.lowercased())
                 Spacer()
@@ -32,8 +30,7 @@ struct SingleWeatherView: View {
                     Image(systemName: weather.currentWeather.weatherIcon)
                 }
             }
-            .font(.title2)
-            .fontWeight(.semibold)
-        }.background(.white)
+            .font(.customRegular())
+        }.background(Color.accentColor)
     }
 }

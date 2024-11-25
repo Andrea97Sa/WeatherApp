@@ -22,7 +22,7 @@ struct HomeView: View {
                     List {
                         if let weatherCities = homeViewModel.weatherCities {
                             ForEach(weatherCities, id: \.self) { city in
-                                SingleWeatherView(weather: city, newWeatherCityPresented: $newWeatherCityPresented, selectedMetric: $selectedMetric)
+                                SingleWeatherView(weather: city, selectedMetric: $selectedMetric)
                                     .listRowSeparator(.hidden)
                                     .onTapGesture {
                                         router.push(to: .details(city))
@@ -54,8 +54,7 @@ struct HomeView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Text("today")
-                        .font(.system(size: 40))
-                        .fontWeight(.bold)
+                        .font(.customTitle())
                 }
                 ToolbarItem(placement: .topBarTrailing) {
                     HStack(spacing: 12) {

@@ -15,20 +15,22 @@ struct TemperatureView: View {
     var body: some View {
         VStack(alignment: .leading) {
             Text(weather.location.name)
+                .font(.customThin())
             HStack(alignment: .center) {
                 Text(selectedMetric == .celsius ?  "\(weather.currentWeather.tempC.description)°" : "\(weather.currentWeather.tempF.description)°")
-                    .font(.system(size: 80))
-                    .fontWeight(.bold)
+                    .font(.customLargeTitle())
                 Spacer()
                 VStack(alignment: .trailing, spacing: 32) {
                     HStack {
                         Image(systemName: weather.currentWeather.weatherIcon)
                         Text(weather.currentWeather.condition.text)
+                            .font(.customThin())
                     }
                     HStack(spacing: 4) {
                         Text("feels like")
+                            .font(.customThin())
                         Text(selectedMetric == .celsius ? "\(weather.currentWeather.feelsLikeC.description)°" : "\(weather.currentWeather.feelsLikeF.description)°")
-                            .fontWeight(.bold)
+                            .font(.customRegular())
                     }
                 }
             }

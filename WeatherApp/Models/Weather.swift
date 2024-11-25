@@ -65,7 +65,7 @@ struct Day: Codable, Hashable {
 
 struct Hour: Codable, Hashable {
     let id = UUID()
-    let time: String
+    let time: Date
     let tempC: Double
     let tempF: Double
     let isDay: Int

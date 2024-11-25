@@ -8,7 +8,7 @@
 import Foundation
 
 struct CurrentWeather: Codable, Hashable {
-    let lastUpdated: String
+    let lastUpdated: Date
     let tempC: Double
     let tempF: Double
     let isDay: Int

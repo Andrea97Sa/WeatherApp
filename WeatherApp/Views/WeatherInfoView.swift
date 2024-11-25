@@ -17,26 +17,30 @@ struct WeatherInfoView: View {
         case .humidity: return
             HStack {
                 Text("humidity")
+                    .font(.customThin())
                 Text("\(weather.currentWeather.humidity.description) \(weatherInfoType.unitMeasure)")
-                    .fontWeight(.bold)
+                    .font(.customRegular())
             }
         case .wind: return
             HStack {
                 Text("wind")
+                    .font(.customThin())
                 Text("\(weather.currentWeather.wind.description) \(weatherInfoType.unitMeasure)")
-                    .fontWeight(.bold)
+                    .font(.customRegular())
             }
         case .uv: return
             HStack {
                 Text("uv")
+                    .font(.customThin())
                 Text("\(weather.currentWeather.uv.description) \(weatherInfoType.unitMeasure)")
-                    .fontWeight(.bold)
+                    .font(.customRegular())
             }
         case .pressure: return
             HStack {
                 Text("pressure")
+                    .font(.customThin())
                 Text("\(weather.currentWeather.pressure.description) \(weatherInfoType.unitMeasure)")
-                    .fontWeight(.bold)
+                    .font(.customRegular())
             }
         }
         

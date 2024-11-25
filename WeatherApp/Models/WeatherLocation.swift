@@ -13,7 +13,7 @@ struct WeatherLocation: Codable, Hashable {
     let country: String
     let lat: Double
     let lon: Double
-    let localtime: String
+    let localtime: Date
     
     enum CodingKeys: String, CodingKey {
         case name

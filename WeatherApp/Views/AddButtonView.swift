@@ -22,6 +22,7 @@ struct AddButtonView: View {
             action()
         } label: {
             Text("add")
+                .font(.customThin())
                 .underline()
         }.disabled(disabled)
         .buttonStyle(.plain)

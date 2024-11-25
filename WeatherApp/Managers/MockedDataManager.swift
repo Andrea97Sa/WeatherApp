@@ -18,10 +18,10 @@ class MockedDataManager: DataProviderProtocol {
             country: "USA",
             lat: 37.7749,
             lon: -122.4194,
-            localtime: "2024-11-24 10:00"
+            localtime: Date()
         ),
         currentWeather: CurrentWeather(
-            lastUpdated: "2024-11-24 09:30",
+            lastUpdated: Date(),
             tempC: 15.0,
             tempF: 59.0,
             isDay: 1,
@@ -53,7 +53,7 @@ class MockedDataManager: DataProviderProtocol {
                     ),
                     hour: [
                         Hour(
-                            time: "2024-11-24 00:00",
+                            time: Date(),
                             tempC: 14.5,
                             tempF: 58.1,
                             isDay: 0,
@@ -68,7 +68,7 @@ class MockedDataManager: DataProviderProtocol {
                             uv: 0.0
                         ),
                         Hour(
-                            time: "2024-11-24 01:00",
+                            time: Date(),
                             tempC: 14.9,
                             tempF: 58.8,
                             isDay: 0,
