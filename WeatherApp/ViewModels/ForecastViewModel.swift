@@ -5,22 +5,32 @@
 //  Created by Ulixe on 25/11/24.
 //
 
-import Foundation
-
+import SwiftUI
 
 class ForecastViewModel: ObservableObject {
     
-    @Published var weather: Weather
-    @Published var selectedMetric: Metric
+    let weather: Weather
     
-    init(weather: Weather, selectedMetric: Metric) {
+    init(weather: Weather) {
         self.weather = weather
-        self.selectedMetric = selectedMetric
     }
     
-    func getSelectedMetricTemp(hour: Hour) -> String {
+    func getSelectedMetricTemp(hour: Hour, selectedMetric: Metric) -> String {
         return selectedMetric == .celsius ? "\(hour.tempC.description)°" : "\(hour.tempF.description)°"
-
     }
+    
+    func checkHourIsPast(hour: Hour) -> Bool {
+        return hour.time.formatted(.dateTime.hour()) < weather.location.localtime.formatted(.dateTime.hour())
+    }
+    
+    func checkHourIsCurrent(hour: Hour) -> Bool {
+        return hour.time.formatted(.dateTime.hour()) == weather.location.localtime.formatted(.dateTime.hour())
+    }
+    
+    func getCurrentHourIndex(by hours: [Hour]) -> Int {
+        let currentHour = weather.location.localtime.formatted(.dateTime.hour())
+        return hours.firstIndex(where: { $0.time.formatted(.dateTime.hour()) == currentHour }) ?? 0
+    }
+
 
 }
