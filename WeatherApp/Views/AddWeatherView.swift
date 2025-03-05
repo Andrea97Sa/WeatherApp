@@ -60,7 +60,7 @@ struct AddWeatherView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     AddButtonView(disabled: addCityWeatherViewModel.selectedCity == nil) {
-                        Task { await homeViewModel.fetchWeatherData(by: addCityWeatherViewModel.selectedCity?.name)
+                        Task { await homeViewModel.fetchWeatherData(by: addCityWeatherViewModel.selectedCity?.name ?? "")
                             newWeatherCityPresented.toggle()
                         }
                     }

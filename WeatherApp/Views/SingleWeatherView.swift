@@ -18,7 +18,7 @@ struct SingleWeatherView: View {
             HStack {
                 Text(weather.location.country.lowercased())
                 Spacer()
-                Text(weather.location.localtime.formatted(date: .omitted, time: .shortened))
+                Text("last update \(weather.location.localtime.formatted(date: .omitted, time: .shortened))")
             }
             .padding(.top, 16)
             .font(.customThin())

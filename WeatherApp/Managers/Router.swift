@@ -31,6 +31,10 @@ enum AppRoute {
 }
 
 extension AppRoute: Hashable {
+    static func == (lhs: AppRoute, rhs: AppRoute) -> Bool {
+        lhs.hashValue == rhs.hashValue
+    }
+    
     
     func hash(into hasher: inout Hasher) {
         

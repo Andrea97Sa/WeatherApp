@@ -21,15 +21,14 @@ struct HomeView: View {
                 case .success:
                     List {
                         ForEach(homeViewModel.weatherCities, id: \.self) { city in
-                                SingleWeatherView(weather: city, selectedMetric: $selectedMetric)
-                                    .listRowSeparator(.hidden)
-                                    .onTapGesture {
-                                        router.push(to: .details(city))
-                                    }
-                            }.onDelete { offset in
-                                homeViewModel.deleteWeatherCity(at: offset)
-                            }
-                        
+                            SingleWeatherView(weather: city, selectedMetric: $selectedMetric)
+                                .listRowSeparator(.hidden)
+                                .onTapGesture {
+                                    router.push(to: .details(city))
+                                }
+                        }.onDelete { offset in
+                            homeViewModel.deleteWeatherCity(at: offset)
+                        }
                     }
                     //MARK: - List Setup
                     .listStyle(.plain)
@@ -71,9 +70,12 @@ struct HomeView: View {
                 content: {
                     AddWeatherView(newWeatherCityPresented: $newWeatherCityPresented, homeViewModel: homeViewModel)
                 })
-            .onReceive(LocationManager.shared.$userLocation, perform: { userLocation in
+            .task {
+                await homeViewModel.fetchPersistedWeatherData()
+            }
+            .onReceive(LocationManager.shared.$userLocation) { userLocation in
                 Task { await homeViewModel.fetchLocationByUserPosition(userLocation: userLocation) }
-            })
+            }
         }
         
     }
