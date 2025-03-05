@@ -93,18 +93,22 @@ class MockedDataManager: DataProviderProtocol {
             id: 2801268,
             name: "London",
             region: "City of London, Greater London",
-            country: "United Kingdom"
+            country: "United Kingdom",
+            lat: 0.0,
+            lon: 0.0
         ),
         City(
             id: 279381,
             name: "Londrina",
             region: "Parana",
-            country: "Brazil"
+            country: "Brazil",
+            lat: 0.0,
+            lon: 0.0
         )
     ]
     
     
-    func fetchWeatherData(by cityName: String? = nil, by position: Position? = nil) async throws -> Weather? {
+    func fetchWeatherData(by position: Position) async throws -> Weather? {
         return mockWeather
     }
     

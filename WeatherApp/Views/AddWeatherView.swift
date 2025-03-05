@@ -29,7 +29,7 @@ struct AddWeatherView: View {
                 case .loading:
                     ProgressView()
                 case .success:
-                    ForEach(addCityWeatherViewModel.cityNames, id: \.id) { city in
+                    ForEach(addCityWeatherViewModel.cityNames.filter( { !homeViewModel.weatherCities.compactMap( { $0.location.name + $0.location.region + $0.location.country } ).contains($0.name + $0.region + $0.country ) }), id: \.id) { city in
                         LazyVStack(alignment: .leading, spacing: 16) {
                             HStack {
                                 Text("\(city.name), \(city.region), \(city.country)")
@@ -60,7 +60,8 @@ struct AddWeatherView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     AddButtonView(disabled: addCityWeatherViewModel.selectedCity == nil) {
-                        Task { await homeViewModel.fetchWeatherData(by: addCityWeatherViewModel.selectedCity?.name ?? "")
+                        let position = Position(latitude: addCityWeatherViewModel.selectedCity?.lat ?? 0, longitude: addCityWeatherViewModel.selectedCity?.lon ?? 0)
+                        Task { await homeViewModel.fetchWeatherData(by: position)
                             newWeatherCityPresented.toggle()
                         }
                     }

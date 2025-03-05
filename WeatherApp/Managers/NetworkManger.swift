@@ -36,17 +36,14 @@ class NetworkManger: DataProviderProtocol {
     }
     
     
-    func fetchWeatherData(by cityName: String? = nil, by position: Position? = nil) async throws -> Weather? {
+    func fetchWeatherData(by position: Position) async throws -> Weather? {
         var parameters: Parameters = [
             "days": 1,
             "aqi": "no",
             "alerts": "no"
         ]
-        if let cityName {
-            parameters["q"] = cityName
-        } else if let position {
-            parameters["q"] = "\(position.latitude),\(position.longitude)"
-        }
+        
+        parameters["q"] = "\(position.latitude),\(position.longitude)"
         
         let url = "forecast.json"
         let weather = try await self.fetch(url, as: Weather.self, parameter: parameters).result.get()
