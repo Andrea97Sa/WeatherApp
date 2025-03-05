@@ -72,7 +72,6 @@ struct HomeView: View {
                 })
             .task {
                 await homeViewModel.fetchPersistedWeatherData()
-                await homeViewModel.fetchLocationByUserPosition(userLocation: LocationManager.shared.userLocation)
             }
             .onReceive(LocationManager.shared.$userLocation) { userLocation in
                 Task { await homeViewModel.fetchLocationByUserPosition(userLocation: userLocation) }

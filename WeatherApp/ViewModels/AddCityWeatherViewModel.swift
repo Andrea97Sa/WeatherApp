@@ -29,6 +29,11 @@ class AddCityWeatherViewModel: BaseViewModel {
         }
     }
     
-    
+    func filteredCityNames(existingWeather: [Weather]) -> [City] {
+        return cityNames
+            .filter({  !existingWeather
+                    .compactMap({ $0.location.name + $0.location.region + $0.location.country })
+            .contains($0.name + $0.region + $0.country ) })
+    }
     
 }
