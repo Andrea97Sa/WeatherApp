@@ -14,30 +14,35 @@ struct WeatherDetailView: View {
     var weather: Weather
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 48) {
+        ZStack(alignment: .top) {
+            CircleWithShadowView(gradientColorsArray: weather.currentWeather.weatherGradient)
+                .offset(y: -300)
             
-            TemperatureView(weather: weather, selectedMetric: $selectedMetric)
-            Divider()
-            MultipleInfoView(weather: weather, selectedMetric: $selectedMetric)
-            Divider()
-            ForecastView(weather: weather, selectedMetric: $selectedMetric)
-            Spacer()
-
+            VStack(alignment: .leading, spacing: 48) {
+                
+                TemperatureView(weather: weather, selectedMetric: $selectedMetric)
+                Divider()
+                MultipleInfoView(weather: weather, selectedMetric: $selectedMetric)
+                Divider()
+                ForecastView(weather: weather, selectedMetric: $selectedMetric)
+                Spacer()
+                
+            }.padding(.horizontal)
         }.toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                Button(action: {
-                    router.pop()
-                }, label: {
-                    Image(systemName: "arrow.left")
-                }).buttonStyle(.plain)
+                ToolbarItem(placement: .topBarLeading) {
+                    Button(action: {
+                        router.pop()
+                    }, label: {
+                        Image(systemName: "arrow.left")
+                    }).buttonStyle(.plain)
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    TempMetricSelectionView(selectedMetric: $selectedMetric)
+                }
             }
-            ToolbarItem(placement: .topBarTrailing) {
-                TempMetricSelectionView(selectedMetric: $selectedMetric)
-            }
+            .padding(.horizontal)
+            .navigationBarBackButtonHidden()
         }
-        .padding(.horizontal)
-        .navigationBarBackButtonHidden()
-    }
 }
 
 #Preview {
