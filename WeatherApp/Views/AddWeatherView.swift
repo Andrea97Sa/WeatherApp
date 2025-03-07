@@ -9,10 +9,11 @@ import SwiftUI
 
 struct AddWeatherView: View {
     
-    @Binding var newWeatherCityPresented: Bool
     @ObservedObject var homeViewModel: HomeViewModel
     @StateObject private var addCityWeatherViewModel = AddCityWeatherViewModel(dataProvider: NetworkManger.shared)
-    
+    @FocusState private var isTextFieldFocused: Bool
+    @Binding var newWeatherCityPresented: Bool
+
     var body: some View {
         NavigationStack {
             VStack {
@@ -25,6 +26,7 @@ struct AddWeatherView: View {
                 TextField("enter city name...", text: $addCityWeatherViewModel.searchText)
                     .textFieldStyle(.roundedBorder)
                     .disableAutocorrection(true)
+                    .focused($isTextFieldFocused)
                 switch addCityWeatherViewModel.viewState {
                 case .loading:
                     ProgressView()
@@ -55,6 +57,7 @@ struct AddWeatherView: View {
             }
             .onAppear {
                 addCityWeatherViewModel.searchText = ""
+                isTextFieldFocused = true
             }
             .padding()
             .toolbar {
@@ -75,5 +78,5 @@ struct AddWeatherView: View {
 }
 
 #Preview {
-    AddWeatherView(newWeatherCityPresented: .constant(false), homeViewModel: HomeViewModel(dataProvider: MockedDataManager.shared))
+    AddWeatherView(homeViewModel: HomeViewModel(dataProvider: MockedDataManager.shared), newWeatherCityPresented: .constant(false))
 }

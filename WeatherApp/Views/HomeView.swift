@@ -68,7 +68,7 @@ struct HomeView: View {
             .sheet(
                 isPresented: $newWeatherCityPresented,
                 content: {
-                    AddWeatherView(newWeatherCityPresented: $newWeatherCityPresented, homeViewModel: homeViewModel)
+                    AddWeatherView(homeViewModel: homeViewModel, newWeatherCityPresented: $newWeatherCityPresented)
                 })
             .task {
                 await homeViewModel.fetchPersistedWeatherData()
