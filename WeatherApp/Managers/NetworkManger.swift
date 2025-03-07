@@ -13,7 +13,7 @@ class NetworkManger: DataProviderProtocol {
     static let shared = NetworkManger()
     
     let baseHost = "https://api.weatherapi.com/v1/"
-    let apiKey = "88d7f08069f54cbf870104542242311"
+    let apiKey = Bundle.main.infoDictionary?["API_KEY"] as? String
     
     let customDecoder: JSONDecoder = {
         let decoder = JSONDecoder()
