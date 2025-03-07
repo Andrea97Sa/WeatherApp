@@ -77,7 +77,6 @@ struct HomeView: View {
                 Task { await homeViewModel.fetchLocationByUserPosition(userLocation: userLocation) }
             }
         }
-        
     }
 }
 
