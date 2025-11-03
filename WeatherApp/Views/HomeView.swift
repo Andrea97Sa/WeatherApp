@@ -16,7 +16,7 @@ struct HomeView: View {
     
     var body: some View {
         NavigationStack(path: $router.navigationPath) {
-            VStack{
+            VStack {
                 switch homeViewModel.viewState {
                 case .success:
                     List {
@@ -50,10 +50,10 @@ struct HomeView: View {
             }
             //MARK: - NavigationBar setup
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Text("today")
-                        .font(.customTitle())
-                }
+                ToolbarItem(placement: .principal) {
+                        Text("today")
+                            .font(.customTitle()) // your custom font
+                    }
                 ToolbarItem(placement: .topBarTrailing) {
                     HStack(spacing: 12) {
                         RefreshWeatherListButton(homeViewModel: homeViewModel)
@@ -62,8 +62,10 @@ struct HomeView: View {
                             newWeatherCityPresented.toggle()
                         })
                     }
+                    .padding(.horizontal, 4)
                 }
             }
+            .navigationBarTitleDisplayMode(.inline)
             //MARK: - Modal Navigation
             .sheet(
                 isPresented: $newWeatherCityPresented,

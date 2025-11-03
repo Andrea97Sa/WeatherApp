@@ -1,5 +1,5 @@
 //
-//  Untitled.swift
+//  BaseViewModel.swift
 //  WeatherApp
 //
 //  Created by Ulixe on 24/11/24.

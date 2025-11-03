@@ -32,6 +32,6 @@ struct TempMetricSelectionView: View {
                     .font(.customThin())
                     .underline(selectedMetric == .farhenheit)
             }).buttonStyle(.plain)
-        }
+        }.padding(.horizontal, 4)
     }
 }

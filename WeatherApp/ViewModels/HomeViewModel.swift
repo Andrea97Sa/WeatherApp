@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  HomeViewModel.swift
 //  WeatherApp
 //
 //  Created by Ulixe on 23/11/24.
@@ -62,7 +62,9 @@ class HomeViewModel: BaseViewModel {
             await MainActor.run {
                 self.viewState = .empty
             }
-            return }
+            return
+        }
+        
         var currentCities = [Weather]()
         for city in weatherCities {
             currentCities.append(city)
